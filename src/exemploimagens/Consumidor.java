@@ -43,7 +43,7 @@ public class Consumidor implements  Runnable {
             System.out.println("Imagem " + cont + " processada...");
 
             try {
-                File f = new File("/test/imagem_saida"+cont+".jpg");
+                File f = new File("test/imagem_saida"+cont+".jpg");
                 ImageIO.write(img_out, "jpg", f);
             } catch (IOException e) {
                 e.printStackTrace();
