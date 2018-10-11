@@ -26,7 +26,7 @@ public class Principal {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        Semaphore livre = new Semaphore(100);
+        Semaphore livre = new Semaphore(10);
         Semaphore ocupado = new Semaphore(0);
         Buffer buffer = new Buffer();
 
