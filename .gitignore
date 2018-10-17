@@ -2,3 +2,5 @@ build.xml
 ExemploImagens*
 manifest*
 .DS_Store
+test/*
+
