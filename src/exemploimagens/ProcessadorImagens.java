@@ -44,7 +44,7 @@ public class ProcessadorImagens {
                 if (B > 255) {
                     B = 255;
                 }
-                
+
                 if (R < 0) {
                     R = 0;
                 }

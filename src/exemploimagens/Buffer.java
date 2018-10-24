@@ -4,18 +4,18 @@ import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
 public class Buffer {
-    private LinkedList<BufferedImage> buffer;
+    private LinkedList<Image> buffer;
 
     public Buffer(){
-        this.buffer = new LinkedList<BufferedImage>();
+        this.buffer = new LinkedList<Image>();
     }
 
-    public synchronized void insert(BufferedImage e) {
+    public synchronized void insert(Image e) {
         buffer.add(e);
     }
 
-    public synchronized BufferedImage remove() {
-        BufferedImage v = buffer.remove();
+    public synchronized Image remove() {
+        Image v = buffer.remove();
         return v;
     }
 }

@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import java.io.File;
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import javax.imageio.ImageIO;
 
@@ -25,19 +27,37 @@ public class Principal {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        ArrayList<Buffer> buffers = new ArrayList<Buffer>();
+        ArrayList<Semaphore> livres = new ArrayList<Semaphore>();
+        ArrayList<Semaphore> ocupados = new ArrayList<Semaphore>();
+        ArrayList<Consumidor> consumidores = new ArrayList<Consumidor>();
+        ArrayList<Thread> threads = new ArrayList<Thread>();
+        Integer quantidadeThreads = 3;
 
-        Semaphore livre = new Semaphore(10);
-        Semaphore ocupado = new Semaphore(0);
-        Buffer buffer = new Buffer();
 
-        Produtor p = new Produtor(buffer,livre, ocupado);
-        Consumidor c = new Consumidor(buffer,livre,ocupado);
+        for (int i=0;i<quantidadeThreads;i++) {
+            Semaphore livre = new Semaphore(10);
+            Semaphore ocupado = new Semaphore(0);
+            Buffer buffer = new Buffer();
+            Consumidor c = new Consumidor(buffer,livre,ocupado);
+            Thread tc = new Thread(c);
 
+            livres.add(livre);
+            ocupados.add(ocupado);
+            buffers.add(buffer);
+            consumidores.add(c);
+            threads.add(tc);
+        }
+
+        Produtor p = new Produtor(buffers,livres, ocupados);
         Thread tp = new Thread(p);
-        Thread tc = new Thread(c);
-
         tp.start();
-        tc.start();
+
+        for (int i=0;i<quantidadeThreads;i++) {
+            threads.get(i).start();
+        }
+
+
 
 
 //        ProcessadorImagens proc = new ProcessadorImagens();

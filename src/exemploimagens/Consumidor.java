@@ -13,10 +13,10 @@ public class Consumidor implements  Runnable {
     private Buffer buffer;
     private Semaphore livre;
     private Semaphore ocupado;
-
-    private Random r = new Random();
+    private Image img;
 
     public Consumidor(Buffer buffer, Semaphore livre, Semaphore ocupado) {
+        System.out.println("Consumidor criado...");
         this.buffer = buffer;
         this.livre = livre;
         this.ocupado = ocupado;
@@ -24,33 +24,40 @@ public class Consumidor implements  Runnable {
 
     @Override
     public void run() {
-        int cont = 0;
+        System.out.println("Consumidor rodando...");
 
         ProcessadorImagens proc = new ProcessadorImagens();
 
-        while (true) {
+        while(true) {
+
+
             try {
+                System.out.println("Consumidor - ocupa...");
                 ocupado.acquire();
             } catch (InterruptedException ex) {
                 Logger.getLogger(Consumidor.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            BufferedImage img = buffer.remove();
-            livre.release();
-            System.out.println("Imagem " + cont + " retirada do Buffer...");
+            this.img = buffer.remove();
+            if (this.img.isEnd()){
+                break;
+            }
 
-            BufferedImage img_out = proc.brilho(img, r.nextInt(100));
-            System.out.println("Imagem " + cont + " processada...");
+            livre.release();
+            System.out.println("Consumidor - libera...");
+            System.out.println("Imagem " + this.img.getFile_name() + this.img.getBrilho() +  " retirada do Buffer...");
+
+            BufferedImage img_out = proc.brilho(this.img.getImg(), this.img.getBrilho());
+            System.out.println("Imagem " + this.img.getFile_name() + this.img.getBrilho() +  " processada...");
 
             try {
-                File f = new File("test/imagem_saida"+cont+".jpg");
+//                File f = new File("test/imagem_saida"+cont+".jpg");
+                File f = new File("test/" + this.img.getFile_name() + this.img.getBrilho() + ".jpg");
                 ImageIO.write(img_out, "jpg", f);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Imagem " + cont + " salva...");
-
-            cont++;
+            System.out.println("Imagem " + this.img.getFile_name() + this.img.getBrilho() +  " salva...");
         }
     }
 }
