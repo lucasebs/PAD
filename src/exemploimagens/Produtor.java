@@ -16,7 +16,7 @@ public class Produtor implements Runnable {
     private ArrayList<Semaphore> ocupados;
     private Integer consumidores;
     private Integer quantidadeImagens;
-    int[] qtds;
+//    int[] qtds;
 //    private Buffer buffer;
 //    private Semaphore livre;
 //    private Semaphore ocupado;
@@ -33,11 +33,11 @@ public class Produtor implements Runnable {
 
     @Override
     public void run() {
-        this.qtds = new int[this.consumidores];
+//        this.qtds = new int[this.consumidores];
 
-        for (int i=0;i<this.consumidores;i++ ) {
-            this.qtds[i] = r.nextInt(8);
-        };
+//        for (int i=0;i<this.consumidores;i++ ) {
+//            this.qtds[i] = r.nextInt(8);
+//        };
 
         System.out.println("Produtor rodando...");
 
@@ -51,49 +51,31 @@ public class Produtor implements Runnable {
             }
 
             Buffer buffer = buffers.get(i);
-            for (int j=0;j<2;j++) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
-                this.qtds[i] -= 1;
-                if (this.qtds.length <= 0) {
-                    break;
-                }
-                cont ++;
-                try {
-                    livres.get(i).acquire();
-                    System.out.println("Produtor ocupa...");
+            try {
+                livres.get(i).acquire();
+                System.out.println("Produtor ocupa...");
 
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Produtor.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                Image img = null;
-                System.out.println(cont-(this.quantidadeImagens/2));
-                try {
-                    File f = new File("imagem_exemplo" + ".jpg");
-                    img = new Image(ImageIO.read(f),"imagem_exemplo",cont-(this.quantidadeImagens/2));
-                } catch (IOException e) {
-                    System.out.println("Erro: " + e);
-                }
-                System.out.println("Adicionando Imagem " + i );
-                buffer.insert(img);
-                ocupados.get(i).release();
-                System.out.println("Produtor libera...");
-
-                if (cont > this.quantidadeImagens) {
-                    break;
-                }
-
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Produtor.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            i++;
-            if (i>=this.consumidores){
-                i=0;
+            Image img = null;
+            System.out.println(cont-(this.quantidadeImagens/2));
+            try {
+                File f = new File("imagem_exemplo" + ".jpg");
+                img = new Image(ImageIO.read(f),"imagem_exemplo",cont-(this.quantidadeImagens/2));
+            } catch (IOException e) {
+                System.out.println("Erro: " + e);
             }
+            System.out.println("Adicionando Imagem " + i );
+            buffer.insert(img);
+            ocupados.get(i).release();
+            System.out.println("Produtor libera...");
+
+            cont++;
+            i = cont % this.consumidores;
         }
+
         for (int h=0; h<consumidores;h++){
             Image img = new Image();
             Buffer buffer = buffers.get(h);
