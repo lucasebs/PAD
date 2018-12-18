@@ -51,14 +51,24 @@ public class Principal {
 
         Produtor p = new Produtor(buffers,livres, ocupados);
         Thread tp = new Thread(p);
-        tp.start();
 
+        long inicio = System.currentTimeMillis();
+        tp.start();
         for (int i=0;i<quantidadeThreads;i++) {
             threads.get(i).start();
         }
 
+        for (int i = 0; i < quantidadeThreads ; i++) {
+            try {
+                threads.get(i).join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
+        long fim = System.currentTimeMillis();
 
+        System.out.println( "Tempo de execução: " + (fim-inicio) + " milissegundos" );
 
 //        ProcessadorImagens proc = new ProcessadorImagens();
 //        try {

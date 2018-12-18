@@ -63,7 +63,7 @@ public class Produtor implements Runnable {
             System.out.println(cont-(this.quantidadeImagens/2));
             try {
                 File f = new File("imagem_exemplo" + ".jpg");
-                img = new Image(ImageIO.read(f),"imagem_exemplo",cont-(this.quantidadeImagens/2));
+                img = new Image(ImageIO.read(f),"imagem_exemplo_processada_",cont-(this.quantidadeImagens/2));
             } catch (IOException e) {
                 System.out.println("Erro: " + e);
             }
@@ -78,8 +78,14 @@ public class Produtor implements Runnable {
 
         for (int h=0; h<consumidores;h++){
             Image img = new Image();
+            try {
+                livres.get(h).acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             Buffer buffer = buffers.get(h);
             buffer.insert(img);
+            ocupados.get(h).release();
         }
     }
 }

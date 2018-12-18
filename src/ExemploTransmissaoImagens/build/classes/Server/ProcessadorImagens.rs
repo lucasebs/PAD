@@ -1,0 +1,1 @@
+ServidorMultiThread.ProcessadorImagens

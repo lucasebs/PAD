@@ -4,7 +4,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +14,8 @@ public class Consumidor implements  Runnable {
     private Semaphore livre;
     private Semaphore ocupado;
     private Image img;
+    private ArrayList<Long> tempos;
+    private Long tempoMedio;
 
     public Consumidor(Buffer buffer, Semaphore livre, Semaphore ocupado) {
         System.out.println("Consumidor criado...");
@@ -29,9 +31,9 @@ public class Consumidor implements  Runnable {
         ProcessadorImagens proc = new ProcessadorImagens();
 
         while(true) {
-
-
+            long inicio = System.currentTimeMillis();
             try {
+
                 System.out.println("Consumidor - ocupa...");
                 ocupado.acquire();
             } catch (InterruptedException ex) {
@@ -40,6 +42,8 @@ public class Consumidor implements  Runnable {
 
             this.img = buffer.remove();
             if (this.img.isEnd()){
+                System.out.println("Consumidor encerado...");
+                tempoMedio =
                 break;
             }
 
@@ -58,6 +62,8 @@ public class Consumidor implements  Runnable {
                 e.printStackTrace();
             }
             System.out.println("Imagem " + this.img.getFile_name() + this.img.getBrilho() +  " salva...");
+            long fim = System.currentTimeMillis();
+            tempos.add(fim-inicio);
         }
     }
 }
